@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+
+    <link rel="manifest" href="manifest.json">
+
+    <!-- un-comment this code to enable service worker
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(() => console.log('service worker installed'))
+          .catch(err => console.log('Error', err));
+      }
+    </script>-->
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">
+    -->
+
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <script src="js/angularfire.js"></script>
+
+
+    <script src="https://cdn.firebase.com/js/client/2.2.3/firebase.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/3.6.6/firebase.js"></script>
+
+
+
+
+    <script src="https://cdn.firebase.com/libs/angularfire/1.0.0/angularfire.min.js">
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js">
+    </script>
+
+
+        <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>
+        <script>
+          // Initialize Firebase
+          var config = {
+            apiKey: "AIzaSyA3L8IH4nwR-ZGizl14SKhtGyF_UORmUfU",
+            authDomain: "brf2-27b76.firebaseapp.com",
+            databaseURL: "https://brf2-27b76.firebaseio.com",
+            projectId: "brf2-27b76",
+            storageBucket: "brf2-27b76.appspot.com",
+            messagingSenderId: "425892193355"
+          };
+          firebase.initializeApp(config);
+        </script>
+
+
+
+
+
+
+
+
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+
+    <!-- your app's js -->
+    <script src="js/app.js"></script>
+    <script src="js/services.js"></script>
+
+    <script src="js/controllers.js"></script>
+    <script src="js/gym.js"></script>
+    <script src="js/forad.js"></script>
+    <script src="js/gastlagenhet.js"></script>
+    <script src="js/lokal.js"></script>
+    <script src="js/garage.js"></script>
+    <script src="js/aktuellt.js"></script>
+    <script src="js/infoblad.js"></script>
+  </head>
+
+
+
+
+  <body ng-app="starter">
+
+    <ion-pane>
+      <ion-nav-bar class="header" align-title="center">
+        <ion-nav-back-button></ion-nav-back-button>
+        <ion-scroll class="bar-positive boka" zooming="true" direction="x">
+
+              <a  ui-sref="Gym">GYM</a>
+              <a  ui-sref="Lokal">LOKAL</a>
+              <a  ui-sref="Forad">FÖRÅD</a>
+              <a  ui-sref="Lagenhet">GÄSTLÄGENHET</a>
+              <a  ui-sref="Garage">GARAGE</a>
+
+
+        </ion-scroll>
+
+
+
+      </ion-nav-bar>
+
+      <ion-nav-view></ion-nav-view>
+
+
+      <!--Home-->
+
+      <script type="text/ng-template" id="home.html">
+        <ion-view view-title="// Brf2">
+
+          <ion-content class="note-content">
+
+            <div class="row">
+              <div class="col intro-brf">
+                <h3 class="text-center">Välkommen <br>till <br>Sköldsklivningen 2</h3>
+                <p class="text-center" >Här kan du enkelt hålla dig uppdaterad och boka olika tjänster som bostadsföreningen har att erbjuda</p>
+
+              <!--  <a class="button button-block button-positive" ui-sref="listNotes">View Notes</a>
+                 <a class="button button-block button-balanced" ui-sref="addNote">Add Notes</a>
+                <a class="button button-block button-calm" ui-sref="editNote">EditNotes</a>
+                <a class="button button-block button-assertive" ui-sref="deleteNote">Delete Notes</a> -->
+
+              </div>
+              </div>
+
+              <div class="row links-front">
+
+                <a ui-sref="Aktuellt" class="card col">
+                  <img src="img/26-hourglass.png"/>
+                  <h3>AKTUELLT</h3>
+                </a>
+
+                <a ui-sref="Infoblad" class="card col">
+                  <img src="img/38-news.png"/>
+                  <h3>INFOBLAD</h3>
+                </a>
+
+            </div>
+
+
+          </ion-content>
+        </ion-view>
+
+      </script>
+
+      <!--List Aktuellt -->
+      <script type="text/ng-template" id="Aktuellt.html">
+        <ion-view view-title="Aktuellt">
+          <ion-content class="note-content">
+            <div class="row">
+              <div class="col">Aktuellt
+
+                <ion-list ng-controller="AktuelltCtrl">
+                  <ion-item class="col-50" ng-show="a.lokal" ng-repeat="a in notes" class="note-listing">
+                    <a  ui-sref="singleNote(({id: a.$id}))" nav-direction="enter">
+                      <h2>{{a.lokal[0].namn}}</h2>
+                      <p>You can explicitly state.</p>
+
+                    </a>
+                  </ion-item>
+                </ion-list>
+              </div>
+            </div>
+          </ion-content>
+        </ion-view>
+      </script>
+
+      <!--Single note -->
+      <script type="text/ng-template" id="singleNote.html">
+        <div ng-controller="SingleNoteCtrl">
+        <ion-view view-title="{{namn}}">
+          <ion-content class="note-content">
+            <div class="row">
+              <div class="col">
+                <p class="text-center">{{datum}}</p>
+
+              </div>
+            </div>
+          </ion-content>
+        </ion-view>
+      </div>
+      </script>
+
+      <!--List Infoblad -->
+      <script type="text/ng-template" id="Infoblad.html">
+        <ion-view view-title="Infoblad">
+          <ion-content class="note-content">
+            <div class="row">
+              <div class="col infoblad">Infoblad
+
+                <ion-list ng-controller="InfobladCtrl">
+                  <ion-item ng-show="a.lokal" ng-repeat="a in notes" class="note-listing">
+                    <!-- byt ut a.lokal för hämta mot db -->
+                    <a class="info-holder" ui-sref="singleNote(({id: a.$id}))" nav-direction="enter">
+
+                      <img class="info-img" ng-src="https://unsplash.it/300?image={{bilder}}" />
+
+                      <div class="info-info">
+                        <h2>{{a.lokal[0].namn}}</h2>
+                        <p>You can explicitly state.</p>
+                    </div>
+                    </a>
+                  </ion-item>
+                </ion-list>
+              </div>
+            </div>
+          </ion-content>
+        </ion-view>
+      </script>
+
+      <!--List Kontakts -->
+      <script type="text/ng-template" id="Kontakt.html">
+        <ion-view view-title="Kontakt">
+          <ion-content class="note-content">
+            <div class="row">
+              <div class="col">Kontakt
+
+                <ion-list ng-controller="KontaktCtrl">
+                  <ion-item ng-repeat="kontakt in kontakter" class="note-listing">
+                    <a ui-sref="singleNote(({id: note.$id}))" nav-direction="enter">
+                      <h2>{{note.title}}</h2>
+
+                    </a>
+                  </ion-item>
+                </ion-list>
+              </div>
+            </div>
+          </ion-content>
+        </ion-view>
+      </script>
+
+      <!--Gym -->
+      <script type="text/ng-template" id="Gym.html">
+        <ion-view view-title="Gym">
+          <ion-content class="note-content">
+            <div class="row">
+              <div class="col">
+                <!-- <img src="img/69-Heart.png"/> -->
+
+                  <div class="content">
+                    <h2>Gym</h2>
+                    <img src="img/69-Heart.png"/>
+                    <p>I källaren på Nolhagagatan 67
+                        finns föreningens Gym. Här finns
+                        det mesta du kan behöva för att
+                        träna. Det finns roddmaskin,
+                        motionscykel, löpband, fria vikter
+                        samt flera maskiner där du kan
+                        träna olika muskelgrupper. Kom
+                        gärna och utnyttja denna
+                        träningsmöjlighet!</p>
+                  </div>
+
+                <ion-list ng-controller="GymCtrl">
+                  <ion-item ng-repeat="kontakt in kontakter" class="note-listing">
+                    <a ui-sref="singleNote(({id: note.$id}))" nav-direction="enter">
+                      <h2>{{note.title}}</h2>
+
+                    </a>
+                  </ion-item>
+                </ion-list>
+              </div>
+            </div>
+          </ion-content>
+        </ion-view>
+      </script>
+
+      <!--Lokal -->
+      <script type="text/ng-template" id="Lokal.html">
+        <ion-view view-title="Lokal">
+          <ion-content class="note-content">
+            <div class="row">
+              <div class="col lokal">
+
+                <div class="content">
+                  <h2>Lokal</h2>
+                  <img src="img/2-Computer.png"/>
+                  <p>Det går bra att hyra föreningslokalen
+                      vid behov, till exempelvis kalas eller
+                      mindre tillställningar. Lokalen finns
+                      i bottenvåningen med ingång
+                      på gaveln vid nr 41.
+                       Här finns ett fullt utrustat kök
+                      med mikro och diskmaskin
+                      och plats för ca 40 personer.
+                      </p>
+
+                      <div class="item button button-block button-positive"
+                      ng-model="addNoteButton"
+                      ng-click="bokaLokal()">
+                      Boka lokalen
+                    </div>
+                </div>
+
+                <div class="list" ng-controller="LokalCtrl" ng-show="formShow">
+
+
+                  <label class="item item-input">
+                    <input type="text" placeholder="Namn" ng-model="namn">
+                  </label>
+                  <label class="item item-input">
+                    <input type="text" placeholder="Datum" ng-model="datum">
+                  </label>
+
+
+
+       <!-- <input type="text" placeholder="Datum" ng-model="datum"> -->
+
+
+                  <div class="item button button-block button-positive"
+                  ng-model="addNoteButton"
+                  ng-disabled="!namn||!datum"
+                  ng-click="saveNote()">
+                  Spara
+                </div>
+
+
+              </div>
+
+
+                <ion-list ng-controller="LokalCtrl">
+                  <ion-item ng-show="l.lokal" ng-repeat="l in notes" class="note-listing">
+
+                        <h2>Den {{l.lokal[0].datum}} är lokalen bokad av {{l.lokal[0].namn}}</h2>
+
+
+
+
+                  </ion-item>
+                </ion-list>
+
+
+              </div>
+            </div>
+
+          </ion-content>
+        </ion-view>
+      </script>
+
+      <!--Föråd -->
+      <script type="text/ng-template" id="Forad.html">
+        <ion-view view-title="Föråd">
+          <ion-content class="note-content">
+            <div class="row">
+              <div class="col forad">
+
+                <div class="content">
+                  <h2>Föråd</h2>
+                  <img src="img/42-Lock.png"/>
+                  <p>Till varje lägenhet hör ett vinds-
+                    och ett källarförråd. Tänk på att
+                     kolla med den som du köpt lägenheten
+                    av, så du vet vilka förråd som är dina.
+                    Cykelrum finns i källaren. Här får cyklar
+                    och barnvagnar placeras.
+                    Motorfordon får inte placeras
+                    här av brandsäkerhetsskäl.
+                      </p>
+                </div>
+
+                <ion-list ng-controller="ForadCtrl">
+                  <ion-item ng-show="f.info " ng-repeat="f in notes " class="note-listing">
+
+                        <h2 >{{f.info.plats}}. {{f.info.namn}} </h2>
+
+
+
+                  </ion-item>
+                </ion-list>
+              </div>
+            </div>
+          </ion-content>
+        </ion-view>
+      </script>
+
+      <!--Lägenhet -->
+      <script type="text/ng-template" id="Lagenhet.html">
+        <ion-view view-title="Lägenhet">
+          <ion-content class="note-content">
+            <div class="row">
+              <div class="col lagenhet">
+
+                <div class="content">
+                  <h2>Gästlägenhet</h2>
+                    <img src="img/44-Key.png"/>
+                  <p>Vid behov kan man som
+                    föreningsmedlem hyra vår
+                    övernattningslägenhet i trappuppgång
+                    55 mot en mindre dygnsavgift.
+                    Hyrestiden är max 1 vecka. Lägenheten
+                    är en etta på 41 kvadratmeter
+                    med sovplats för fyra personer
+                    och kostnaden är 200/natt.
+                      </p>
+                      <div class="item button button-block button-positive"
+                      ng-model="addNoteButton"
+                      ng-click="bokaGast()">
+                      Boka gästlägenheten
+                    </div>
+                </div>
+
+                <div class="list" ng-controller="LagenhetCtrl" ng-show="formShow">
+
+
+                  <label class="item item-input">
+                    <input type="text" placeholder="Namn" ng-model="namn">
+                  </label>
+                  <label class="item item-input">
+                    <input type="text" placeholder="Datum" ng-model="datum">
+                  </label>
+
+
+
+       <!-- <input type="text" placeholder="Datum" ng-model="datum"> -->
+
+
+                  <div class="item button button-block button-positive"
+                  ng-model="addNoteButton"
+                  ng-disabled="!namn||!datum"
+                  ng-click="saveGast()">
+                  Spara
+                </div>
+
+
+              </div>
+
+
+                <ion-list ng-controller="LagenhetCtrl">
+                  <ion-item  ng-show="g.gast " ng-repeat="g in notes" class="note-listing">
+                    <h2>{{g.gast[0].datum}} är gästlägenheten bokad av {{g.gast[0].namn}}</h2>
+
+
+                  </ion-item>
+                </ion-list>
+              </div>
+            </div>
+          </ion-content>
+        </ion-view>
+      </script>
+
+      <!--Garage-->
+      <script type="text/ng-template" id="Garage.html">
+        <ion-view view-title="Garage">
+          <ion-content class="note-content">
+            <div class="row">
+              <div class="col garage">
+
+                <div class="content">
+                  <h2>Garage</h2>
+                    <img src="img/car.png"/>
+                  <p>Vid behov kan man som
+                    föreningsmedlem hyra vår
+                    övernattningslägenhet i trappuppgång
+                    55 mot en mindre dygnsavgift.
+                    Hyrestiden är max 1 vecka. Lägenheten
+                    är en etta på 41 kvadratmeter
+                    med sovplats för fyra personer
+                    och kostnaden är 200/natt.
+                      </p>
+                       <button ng-click="showLiten()">Liten</buttoon>
+                       <button ng-click="showStor()">Stor</button>
+                </div>
+
+                <div ng-show="stor">
+                <ion-list  ng-controller="GarageCtrl">
+                  <ion-item ng-show="g.garage" ng-repeat="g in notes " class="note-listing">
+
+                        <h2 >Stor {{g.garage.plats}}. {{g.garage.namn}} </h2>
+
+                  </ion-item>
+                </ion-list>
+              </div>
+
+              <div ng-show="liten">
+                  <ion-list  ng-controller="GarageCtrl">
+                    <ion-item ng-show="g.garage" ng-repeat="g in notes " class="note-listing">
+
+                        <h2 >Liten {{g.garage.plats}}. {{g.garage.namn}} </h2>
+
+                      </ion-item>
+                  </ion-list>
+                </div>
+              </div>
+            </div>
+          </ion-content>
+        </ion-view>
+      </script>
+
+
+
+
+
+       <ion-footer-bar class="footer tabs tabs-icon-top">
+
+
+
+            <a class="tab-item" ui-sref="home">
+               <i class="icon ion-home"></i>
+               Hem
+            </a>
+            <a class="tab-item" ui-sref="Kontakt">
+              <i class="icon ion-ios-telephone "></i>
+              Kontakt
+            </a>
+
+
+
+       </ion-footer-bar>
+    </ion-pane>
+  </body>
+</html>

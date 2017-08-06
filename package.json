@@ -1,0 +1,32 @@
+{
+  "name": "brf2",
+  "version": "1.1.1",
+  "description": "Brf2: An Ionic project",
+  "devDependencies": {
+    "@ionic/cli-plugin-ionic1": "2.1.1",
+    "gulp": "^3.5.6",
+    "gulp-clean-css": "^3.7.0",
+    "gulp-rename": "^1.2.0",
+    "gulp-sass": "^3.1.0"
+  },
+  "cordovaPlugins": [
+    "cordova-plugin-whitelist",
+    "cordova-plugin-console",
+    "cordova-plugin-device",
+    "cordova-plugin-splashscreen",
+    "ionic-plugin-keyboard"
+  ],
+  "cordovaPlatforms": [
+    "ios"
+  ],
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Toni Caktas",
+  "license": "ISC",
+  "dependencies": {
+    "angularfire": "^2.3.0",
+    "firebase": "^4.2.0"
+  }
+}
